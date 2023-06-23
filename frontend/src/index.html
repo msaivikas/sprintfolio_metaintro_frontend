@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=450, initial-scale=1.0">
+    <title>MetaIntro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="./index.css">
+</head>
+<body>
+    <h1 style="color: #7f00ff" class="text-center">MetaIntro</h1>
+    <div class="name-banner container " style="max-width: 450px;">
+        <div class="row">
+            <div class="col-2 container d-flex justify-content-center rounded-3">
+                <img  src="./images/randmperson.jpg" alt="user image" style="max-width: 50px; ">
+            </div>
+            <div class="col" style="color: #fff;">
+                <h4>Satoshi Nakamoto</h4>
+                <h6>web3 Developer</h6>
+            </div>
+        </div>
+        
+    </div>
+    <br>
+    
+
+    <div class="container d-flex justify-content-center icon-style" style="max-width: 450px;">
+        <div class="row d-flex justify-content-center">
+            <div class="col icon-option" onclick="selectOption(this)" id="education-button"><img src="./images/icons/graduation-cap.png" alt="" style="max-width: 50px;">Education</div>
+            <div class="col icon-option" onclick="selectOption(this)" id="employment-button"><img src="./images/icons/self-employed.png" alt="" style="max-width: 50px;">Employment</div>
+            <div class="col icon-option" onclick="selectOption(this)" id="badge-button"><img src="./images/icons/settings.png" alt="" style="max-width: 50px;">Badges</div>
+            <div class="col icon-option" onclick="selectOption(this)" id="info-button"><img src="./images/icons/personal-information.png" alt="" style="max-width: 50px;">Information</div>
+        </div>
+        
+    </div>
+    <div class="container">
+        <div id="result-container"></div>
+      </div>
+      
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    <script>
+        const educationButton = document.getElementById('education-button');
+const resultContainer = document.getElementById('result-container');
+
+// Function to handle the Education option click
+function selectOption(element) {
+  // Remove the underline class from all options
+  const options = document.querySelectorAll('.icon-option');
+  options.forEach(option => {
+    option.classList.remove('underline');
+  });
+  
+  // Add the underline class to the clicked option
+  element.classList.add('underline');
+  
+  const selectedElement = element.textContent.trim();
+  if(selectedElement == 'Education') fetchEducationData();
+  else if(selectedElement == 'Employment') fetchEmploymentData();
+  else if(selectedElement == 'Badges') fetchBadgesData();
+  else if(selectedElement == 'Information') fetchInformationData();
+  
+}
+
+// Function to fetch and display the education data
+async function fetchEducationData() {
+  try {
+    const education = await near.view(resume.contractName, 'get_education', {});
+//     const educationData = [
+//   {
+//     school: 'Example University',
+//     degree: 'Bachelor of Science',
+//     fieldOfStudy: 'Computer Science',
+//     startYear: 2016,
+//     endYear: 2020
+//   },
+//   {
+//     school: 'Another University',
+//     degree: 'Master of Arts',
+//     fieldOfStudy: 'English Literature',
+//     startYear: 2012,
+//     endYear: 2014
+//   }
+// ];
+    displayEducationData(education);
+  } catch (error) {
+
+// Simulate fetching and displaying the education data
+displayEducationData(educationData);
+    console.error('Error fetching education data:', error);
+    resultContainer.innerHTML = 'Error fetching education data.';
+  }
+}
+
+// Function to display the education data
+function displayEducationData(education) {
+  resultContainer.innerHTML = '';
+
+  if (education.length === 0) {
+    resultContainer.innerHTML = 'No education data found.';
+    return;
+  }
+
+  education.forEach(edu => {
+    const educationItem = document.createElement('div');
+    educationItem.classList.add('education-item');
+
+    const schoolName = document.createElement('h3');
+    schoolName.textContent = edu.school;
+    educationItem.appendChild(schoolName);
+
+    const degree = document.createElement('p');
+    degree.textContent = `Degree: ${edu.degree}`;
+    educationItem.appendChild(degree);
+
+    const fieldOfStudy = document.createElement('p');
+    fieldOfStudy.textContent = `Field of Study: ${edu.fieldOfStudy}`;
+    educationItem.appendChild(fieldOfStudy);
+
+    const startYear = document.createElement('p');
+    // startYear.textContent = `Start Year: ${edu.startYear}`;
+    // educationItem.appendChild(startYear);
+
+    const endYear = document.createElement('p');
+    // endYear.textContent = `End Year: ${edu.endYear}`;
+    // educationItem.appendChild(endYear);
+    // const yearsActive = `Active years : ${edu.startYear} - ${edu.endYear}` 
+    const yearsActive = document.createElement('p');
+    yearsActive.textContent = `Active years : ${edu.startYear} - ${edu.endYear}` ;
+    educationItem.appendChild(yearsActive)
+
+    resultContainer.appendChild(educationItem);
+  });
+}
+
+async function fetchEmploymentData(){
+    try{
+        const employment = await near.view(resume.contractName, 'get_experience', displayEmploymentData(employment));
+    }
+    catch(error){
+        console.error('Error fetching Employment Data', error);
+        resultContainer.innerHTML = 'Error fetching Employment Data';
+    }
+}
+
+function displayEmploymentData(employment){
+    if(employment.length===0){
+        resultContainer.innerHTML = 'Employment data unavailable';
+        return ;
+    }
+    resultContainer.innerHTML = '';
+    employment.forEach(emp=>{
+        const employmentItem = document.createElement('div');
+        employmentItem.classList.add('employmentItem');
+        const companyName = document.createElement('h3');
+        companyName.textContent = emp.company;
+        employmentItem.appendChild(companyName);
+
+        const positionName = document.createElement('h5');
+        positionName.textContent = emp.position;
+        employmentItem.appendChild(positionName);
+
+        const locationName = document.createElement('p');
+        locationName.textContent = emp.location;
+        employmentItem.appendChild(locationName);
+
+        const descriptionData = document.createElement('p');
+        descriptionData.textContent = emp.description;
+        employmentItem.appendChild(descriptionData);
+
+        const startYear = document.createElement('p');
+        const endYear = document.createElement('p');
+        const yearsActive = document.createElement('p');
+        yearsActive.textContent = `Active years : ${emp.startYear} - ${emp.endYear}`;
+        employmentItem.appendChild(yearsActive);
+
+        resultContainer.appendChild(employmentItem);
+    })
+
+}
+
+
+
+// async function fetchBadgesData() {
+//   try {
+//     const badges = await near.view(resume.contractName, 'get_badges');
+//     displayBadgesData(badges);
+//   } catch (error) {
+//     console.error('Error fetching Badges Data', error);
+//     resultContainer.innerHTML = 'Error fetching Badges Data';
+//   }
+// }
+
+// function displayBadgesData(badges) {
+//   if (badges.length === 0) {
+//     resultContainer.innerHTML = 'No badges available';
+//     return;
+//   }
+
+//   resultContainer.innerHTML = '';
+//   badges.forEach((badge) => {
+//     const badgeItem = document.createElement('div');
+//     badgeItem.classList.add('badgeItem');
+
+//     // Create and append elements to badgeItem for displaying badge information
+
+//     resultContainer.appendChild(badgeItem);
+//   });
+// }
+
+// async function fetchInformationData() {
+//   try {
+//     const information = await near.view(resume.contractName, 'get_information');
+//     displayInformationData(information);
+//   } catch (error) {
+//     console.error('Error fetching Information Data', error);
+//     resultContainer.innerHTML = 'Error fetching Information Data';
+//   }
+// }
+
+// function displayInformationData(information) {
+//   // Display the information data in the resultContainer
+//   // Customize the implementation based on the structure of the information data
+// }
+
+
+
+
+// Initialize NEAR contract and resume instance
+const near = new nearApi.Near();
+const resume = new Resume(near);
+
+// You may need to initialize NEAR and the resume instance with appropriate configuration
+// Update the contract name and other necessary configuration values
+
+// Example configuration for connecting to NEAR Testnet
+const config = {
+  nodeUrl: 'https://rpc.testnet.near.org',
+  networkId: 'testnet',
+  walletUrl: 'https://wallet.testnet.near.org',
+  helperUrl: 'https://helper.testnet.near.org',
+  contractName: 'your-contract-name',
+};
+
+near.connection = nearApi.Connection.fromConfig(config);
+resume.contractName = config.contractName;
+
+
+
+
+
+
+    </script>
+</body>
+</html>
