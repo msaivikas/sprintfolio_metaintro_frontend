@@ -209,22 +209,73 @@ function displayEmploymentData(employment){
 //   });
 // }
 
-// async function fetchInformationData() {
-//   try {
-//     const information = await near.view(resume.contractName, 'get_information');
-//     displayInformationData(information);
-//   } catch (error) {
-//     console.error('Error fetching Information Data', error);
-//     resultContainer.innerHTML = 'Error fetching Information Data';
-//   }
-// }
-
-// function displayInformationData(information) {
-//   // Display the information data in the resultContainer
-//   // Customize the implementation based on the structure of the information data
-// }
+async function fetchInformationData() {
+  try {
+    const firstName = await near.view(resume.contractName, 'get_first_name');
+    const lastName = await near.view(resume.contractName, 'get_last_name');
+    const email = await near.view(resume.contractName, 'get_email');
+    const phoneNumber = await near.view(resume.contractName, 'get_phone_number');
 
 
+
+    const informationData = {
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+    }
+    displayInformationData(informationData);
+
+ 
+  } catch (error) {
+    console.error('Error fetching Information Data', error);
+    resultContainer.innerHTML = 'Error fetching Information Data';
+  }
+}
+
+
+
+function displayInformationData(informationData) {
+  resultContainer.innerHTML = '';
+
+  // Container for name
+  const nameContainer = document.createElement('div');
+  nameContainer.classList.add('name-container');
+
+  // First name
+  const firstNameElement = document.createElement('h3');
+  firstNameElement.textContent = `${informationData.firstName} `;
+
+  // Last name
+  const lastNameElement = document.createElement('h3');
+  lastNameElement.textContent = ` ${informationData.lastName} `;
+
+  nameContainer.appendChild(firstNameElement);
+  nameContainer.appendChild(lastNameElement);
+
+  resultContainer.appendChild(nameContainer);
+
+  // Email
+  const emailElement = document.createElement('p');
+  emailElement.textContent = `Email: ${informationData.email}`;
+  resultContainer.appendChild(emailElement);
+
+  // Phone number
+  const phoneNumberElement = document.createElement('p');
+  phoneNumberElement.textContent = `Phone: ${informationData.phoneNumber}`;
+  resultContainer.appendChild(phoneNumberElement);
+}
+
+
+
+// const testInformationData = {
+//     firstName: 'John',
+//     lastName: 'Doe',
+//     email: 'johndoe@example.com',
+//     phoneNumber: '1234567890'
+//   };
+
+//   displayInformationData(testInformationData);
 
 
 // Initialize NEAR contract and resume instance
